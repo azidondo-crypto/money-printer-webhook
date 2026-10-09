@@ -1,16 +1,12 @@
 const express = require('express');
 const app = express();
-app.use(express.json());
+app.use(express.text({ type: '*/*' }));
 
 const BOT_TOKEN = '8984850102:AAEtYA5_ctg8HNMB2nQLRyq3uAnYn89aLPg';
 const CHAT_ID = '-1003853245247';
 
 app.post('/webhook', async (req, res) => {
-  let message = typeof req.body === 'string' ? req.body : JSON.stringify(req.body, null, 2);
-
-  if (!message || message === '{}' || message.trim() === '') {
-    message = '⚠️ Alert fired but no message content was sent from TradingView';
-  }
+  const message = req.body || 'Alert fired but no message content was sent';
 
   await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
     method: 'POST',
